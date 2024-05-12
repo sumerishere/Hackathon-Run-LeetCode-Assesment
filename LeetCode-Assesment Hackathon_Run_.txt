@@ -1,0 +1,451 @@
+ 		// ----------- LC Assesment Hackathon Run  -------------------//
+
+
+
+  1. Given mxn matrix of 0s and 1s where 0 represents water and 1 represents land. Find the number of islands   
+     in the matrix.   
+    - (problem no. : 200, 463)
+
+
+
+   Ans (463) : 
+
+	// for out of bound checking so there are always  4 - way to out.of.bound
+
+	1.   --> 1st row up side  always out.of.bount.
+   
+	2.    --> last row bottem side will alwys out.of.bount.
+   
+	3.     --> 1st colmn left side will alwys out.of.bount.
+
+	4.      --> last colmn right side will alwys out.of.bount.
+
+
+
+  public int islandPerimeter(int[][] grid) {   
+        
+        int rows = grid.length;      // row length
+        int colms = grid[0].length;    // colmn length
+        
+        int perimeter_count = 0;  // counter to add perimeter.
+        
+        for(int i = 0 ; i < rows; i++){
+            
+            for(int j = 0; j < colms; j++){
+                
+                if(grid[i][j] == 1){
+                    
+                    // Look for Up side of Row and out of bound checking 
+                    if( (i > 0 && grid[i-1][j] == 0 ) || i == 0 ){   //i == 0 --> check out of bound 1-row
+                        perimeter_count++;
+                    }
+                    
+                    //Look for Right side of Colmn
+                    // j < colms-1 --> avoid ArrayIndexOutBound Exception.
+                    
+                    if( (j < colms-1 && grid[i][j+1] == 0 ) || j == colms - 1){   //j == colms - 1 --> check out of bound for last-colmn
+                        perimeter_count++;
+                    }
+                    
+                    //Look for Down side of Row
+                    // i < rows-1 will check out of bound
+                    if( (i < rows - 1 && grid[i+1][j] == 0 ) || i == rows - 1 ){   //i == rows-1 --> check out of bound 
+                        perimeter_count++;
+                    }
+                    
+                    // Look for Left side of Colmn
+                    if( (j > 0 && grid[i][j-1] == 0 ) || j == 0 ){   //i == 0 --> check out of bound
+                        perimeter_count++;
+                    }
+                }
+            }
+        }
+        return perimeter_count;   
+    }
+
+
+	 --------------------------------------------------------------------------------------
+
+    
+ 2. Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go   
+    outside the signed 32-bit integer range [-231, 231 - 1], then return 0.
+    Assume the environment does not allow you to store 64-bit integers (signed or unsigned).
+    - (problem no. : 7)
+
+     - In Java, Integer.MAX_VALUE is a constant that represents the maximum value an int variable can hold. 	It's defined as 2^31 - 1, which is 2147483647. Here's a detailed explanation:
+
+	Data Type: In Java, int is a primitive data type that represents signed 32-bit integers. It means it 	can hold both positive and negative integers.
+
+	Size: Being a 32-bit integer, it can hold values ranging from -2^31 to 2^31 - 1. The highest value it 	can represent without overflowing is 2^31 - 1.
+
+
+    ans :
+
+		int num = Math.abs(x);  // Original number ka absolute value nikala
+        
+                int rev = 0;  // Reversed number
+        
+        	while (num != 0) {
+         	   int ld = num % 10;  // Last digit nikala
+            
+          	  // Overflow check
+            	  if (rev > (Integer.MAX_VALUE - ld) / 10) {
+                	return 0;  // Agar overflow hua, toh 0 return kardo
+           	   }
+            
+            	   rev = rev * 10 + ld;  // Reverse mein digit ko add kiya
+            	   num = num / 10;  // Last digit hata diya, next iteration ke liye
+        	}
+        
+        	return (x < 0) ? (-rev) : rev;  // Original number ke sign ke hisaab se result diya
+
+	
+	  ----------------------------------------------------------------------------------
+
+ 3. Merge 2 arrays and sort it. Part of the code was pre-written and her task was to fix / add on to it and   
+    get the output.
+   - (problem no. : 88)
+
+
+	public void merge(int[] nums1, int m, int[] nums2, int n) {
+        
+        	int i = m - 1;
+        	int j = n - 1;
+        	int k = m + n - 1;
+
+        
+        	//If nums1[i] is greater, it means we want to place nums1[i] at the end of the combined array.
+        	//If nums2[j] is greater or equal, it means we want to place nums2[j] at the end of the 		   combined array.
+        
+    	        while (i >= 0 && j >= 0) {
+            
+            	   if (nums1[i] > nums2[j]) {
+                     nums1[k] = nums1[i];
+                     i--;
+           	  } 
+           	  else {
+             	     nums1[k] = nums2[j];
+               	     j--;
+           	  }
+            	  k--;
+                }
+        
+        	// Handle remaining elements from nums1:
+       		while (i >= 0) {
+            	  nums1[k] = nums1[i];
+           	  i--;
+           	  k--;
+       	         }
+        
+       		// Handle remaining elements from nums2:
+        	while (j >= 0) {
+            	   nums1[k] = nums2[j];
+            	   j--;
+                   k--;
+       	       	}
+    	    }
+
+	   --------------------------------------------------------------------------------
+
+
+
+ 4. Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path  
+    such that adding up all the values along the path equals targetSum
+   - (problem no. : 112, 257)
+
+       problem -112 ans :
+
+		 if(root == null){
+       		     return false;
+      		 }
+        
+        	 //already initialzed ans with false.
+      		 boolean left = false;
+       		 boolean right = false;
+        
+       		 targetSum = targetSum - root.val;  //recursive iteration perform.
+        
+       		 //for leaf node checking
+       		 if(root.left == null && root.right == null && targetSum == 0){
+        	    	return true;
+      		  }
+        	else{
+          	      //recursion call for left side of root.
+           	      if(root.left != null){
+                	left = hasPathSum(root.left, targetSum);
+            	      }
+            
+                      //recursion call for right side of root.
+           	      if(root.right != null){
+                   	 right = hasPathSum(root.right, targetSum);
+            	      }
+		}   
+    
+        	return left || right; //checking and finalized the ans using or.
+
+
+
+
+
+  	   -----------------------------------------------------------------------------------
+
+ 5. Remove duplicates from a linked list
+   - (problem no. : 83 )
+
+     ans :
+	   if(head == null || head.next == null){   //handling empty or single node case.
+           	 return head ;
+           }
+         
+           ListNode res = head;
+     
+           while( res!= null && res.next != null){
+
+              if(res.val == res.next.val){
+                 res.next = res.next.next;
+              } 
+	      else{
+                res = res.next;
+              }
+           }
+           return head;
+
+
+
+   	-----------------------------------------------------------------------------------
+
+
+ 6. List the subsets of a set 
+   - (problem no. : 78)
+
+
+
+	 List<List<Integer>> result;
+    
+   	 public List<List<Integer>> subsets(int[] nums) {
+
+        	result = new ArrayList();
+        	if(nums==null || nums.length==0) return result;
+    
+       		subsets(nums,new ArrayList<Integer>(), 0);
+        	return result;
+    	}
+    
+    	private void subsets(int[] nums, ArrayList<Integer> temp, int index) {
+       	     // base condition
+            if(index >= nums.length) {
+               result.add(new ArrayList<>(temp));
+               return;
+            }
+        
+      	   // main logic:	
+            // case 1 : we pick the element
+            temp.add(nums[index]);
+            subsets(nums, temp, index+1); // move ahead
+            temp.remove(temp.size()-1);
+        
+ 	    // case 2 : we don't pick the element ( notice, we did not add the current element in our temporary list
+            subsets(nums, temp, index+1); // move ahead
+        }
+
+
+
+
+
+	-----------------------------------------------------------------------------------
+
+
+ 7. Circular lists: Given head, the head of a linked list, determine if the linked list has a cycle in it.
+    There is a cycle in a linked list if there is some node in the list that can be reached again by   
+    continuously following the next pointer. Internally, pos is used to denote the index of the node that  
+    tail's next pointer is connected to. Note that pos is not passed as a parameter.
+
+    Return true if there is a cycle in the linked list. Otherwise, return false.
+
+    Example 1:
+       3 -> 2 -> 0 -> -4 -> 2
+
+    Input: head = [3,2,0,-4], pos = 1
+    Output: true
+    Explanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).
+    - (problem no. : 141)
+
+
+
+        public boolean hasCycle(ListNode head) {
+        
+  	   	 // 1. HashSet--> using hashset approach checking the repeation of pointer to find the LL cycle.
+        
+            HashSet<ListNode> set =  new HashSet<>();
+        
+            ListNode pointer = head;
+        
+            while(pointer != null){
+
+               if(set.contains(pointer)) return true;
+               set.add(pointer);
+               pointer = pointer.next;
+           }
+           return false;
+  
+
+         //----- 2. Slow-Fast Pointer approach or floyd's appraoch.-----//
+        
+           ListNode slow_pnt = head;   
+           ListNode fast_pnt = head;
+        
+           while(fast_pnt!= null && fast_pnt.next != null){
+              if(slow_pnt == fast_pnt.next) return true;
+            
+              slow_pnt = slow_pnt.next;
+              fast_pnt = fast_pnt.next.next;
+           }
+           return false;
+        
+        }
+
+
+		---------------------------------------------------------------------------------------
+
+
+
+  8. A peak element is an element that is strictly greater than its neighbors.
+     Given a 0-indexed integer array nums, find a peak element, and return its index. If the array contains  
+     multiple peaks, return the index to any of the peaks.
+
+    You may imagine that nums[-1] = nums[n] = -∞. In other words, an element is always considered to be   
+    strictly greater than a neighbor that is outside the array.
+
+    Example 1:
+
+	Input: nums = [1,2,3,1]
+	Output: 2
+	Explanation: 3 is a peak element and your function should return the index number 2.
+
+	- (problem  no.  162-LC  :  ||  wrong :(https://www.geeksforgeeks.org/find-a-peak-in-a-given-array/)
+
+
+
+       public int findPeakElement(int[] nums) {
+        
+        
+                  int left_pointer = 0;
+                  int right_pointer = nums.length - 1;
+        
+            while(left_pointer < right_pointer){
+            
+            	  int mid_element = (left_pointer + right_pointer)/2;
+                
+            	  if(nums[mid_element] > nums[mid_element+1]){
+               	      right_pointer = mid_element;
+           	  }
+           	  else{
+                	  left_pointer = mid_element + 1;
+           	  }
+            }
+            return left_pointer;
+            }
+ 
+		
+               ---------------------------------------------------------------------------------------
+
+
+
+   9. Given an array of distinct elements. The task is to find triplets in an array whose sum is equal to a     
+      given number.
+
+	Examples:
+
+	Input: arr[] = {0, -1, 2, -3, 1} , sum = -2
+
+	Output:  [0 -3  1], [-1  2 -3]
+
+	If we calculate the sum of the output,
+	0 + (-3) + 1 = -2
+	(-1) + 2 + (-3) = -2
+
+	Input: arr[] = {1, -2, 1, 0, 5}, sum = 0
+	Output: 1 -2  1
+
+	If we calculate the sum of the output,
+	1 + (-2) + 1 = 0
+
+ 	- ( problem no.   :   https://www.geeksforgeeks.org/print-all-triplets-with-given-sum/)
+
+
+	public static void findTriplets(int arr[],int n, int sum){
+      
+		for (int i = 0; i < n - 2; i++) {
+		   for (int j = i + 1; j < n - 1; j++) {
+		      for (int k = j + 1; k < n; k++) {
+			  if (arr[i] + arr[j] + arr[k] == sum) {
+				System.out.println(arr[i] + " " + arr[j]+ " " + arr[k]);
+		       	  }
+		       }
+		    }
+		 }
+	}
+  
+	public static void main(String[] args){
+		int arr[] = { 0, -1, 2, -3, 1 };
+		int n = arr.length;
+		findTriplets(arr, n, -2);
+	}
+
+
+
+           ---------------------------------------------------------------------------------------
+
+
+
+
+    10. Find the square root of an integer without using built in function
+
+      - (problem no.  :   https://www.geeksforgeeks.org/square-root-of-an-integer/)
+
+         
+           public static double sqrtMethod(int x){
+      
+   	             double sqrt = x/2;
+      	         double temp;
+      
+      	             do{
+      	                temp = sqrt;
+       	                      sqrt = (temp-(x/temp))/2;
+      	              }
+
+      	              while((temp - sqrt) !=0);
+      	          return sqrt;
+   	 }
+  
+    	   public static void main(String[] args) {
+      
+      	               Scanner sc = new Scanner(System.in);
+      	      System.out.print("enter the number: ");
+      
+      	               int x = sc.nextInt();
+     	               System.out.println("sqrt of "+x+" "+sqrtMethod(x));
+ 	  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
