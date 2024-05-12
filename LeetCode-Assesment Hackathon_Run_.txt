@@ -329,8 +329,8 @@
        public int findPeakElement(int[] nums) {
         
         
-                  int left_pointer = 0;
-                  int right_pointer = nums.length - 1;
+            int left_pointer = 0;
+            int right_pointer = nums.length - 1;
         
             while(left_pointer < right_pointer){
             
